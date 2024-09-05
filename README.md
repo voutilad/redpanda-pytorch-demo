@@ -3,7 +3,8 @@
 This is an example of operationalizing a classification model using 
 Redpanda Connect with Python. It leverages Python modules from
 [Hugging Face](https://huggingface.co) and [PyTorch](https://pytorch.org) with
-a pre-tuned sentiment classifier for financial news.
+a pre-tuned sentiment classifier for financial news derived from Meta's
+[RoBERTa base model](https://huggingface.co/FacebookAI/roberta-base).
 
 Two examples are provided:
 

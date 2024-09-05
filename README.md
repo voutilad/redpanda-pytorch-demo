@@ -15,7 +15,7 @@ Two examples are provided:
   - an **enrichment workflow** that takes data from one Redpanda
     topic, classifies it, and outputs results to a destination topic
 
-> Note: The model used is originally from a Hugging Face user:
+> Note: The model used is originally from Hugging Face user `mrm8448`:
 > https://huggingface.co/mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis
 > It's included as a git submodule, but if you're viewing this README
 > via Github's web ui and trying to click the submodule link, they

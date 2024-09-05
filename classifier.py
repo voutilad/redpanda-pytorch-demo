@@ -19,7 +19,7 @@ model = AutoModelForSequenceClassification.from_pretrained("model/")
 
 # Defer creating our inference pipeline so the caller can pick a device type.
 _sentiment = None
-def get_pipeline(device="mps"):
+def get_pipeline(device="cpu"):
     """
     Create a sentiment-analysis pipeline using the given device.
     """

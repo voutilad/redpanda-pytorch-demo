@@ -161,8 +161,17 @@ embedding Python works) and a runtime import of a local helper module
 [classifier](./classifier.py) that wires up the pre-trained model and
 tokenizer.
 
-> For more details, see the https://github.com/voutilad/rp-connect-python
-> project on the nuances of the bloblang-like features embedded in Python.
+> Q: What about GPUs? Does this work with GPUs?
+> A: Yes. The code is defaulting right now to a "cpu" device, but you can
+>    change the argument to `get_pipeline()` in the Python code and pass
+>    an appropriate value that PyTorch can use. For instance, if you're
+>    on macOS with Apple Silicon, use `"mps"`. See the
+>    [torch.device](https://pytorch.org/docs/stable/tensor_attributes.html#torch.device)
+>    docs for details on supported values.
+
+For more details on how Python integrates with Redpanda Connect, see the
+https://github.com/voutilad/rp-connect-python project on the nuances of 
+the bloblang-like features embedded in Python.
 
 To output data, we leverage a runtime decision via the use of resources:
 

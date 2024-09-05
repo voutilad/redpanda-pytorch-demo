@@ -62,7 +62,8 @@ output_resources:
       outputs:
         - sync_response: {}
         - kafka_franz:
-            seed_brokers: [ ${REDPANDA_BROKERS:localhost} ]
+            seed_brokers:
+              - ${REDPANDA_BROKERS:localhost}
             topic: financial-sentiment
             tls:
               enabled: ${REDPANDA_TLS:false}

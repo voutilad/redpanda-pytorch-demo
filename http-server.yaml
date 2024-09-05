@@ -28,7 +28,7 @@ pipeline:
                 from classifier import get_pipeline
 
                 text = content().decode()
-                pipeline = get_pipeline("cpu")
+                pipeline = get_pipeline(device="cpu")
                 root.text = text
 
                 scores = pipeline(text)

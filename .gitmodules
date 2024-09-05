@@ -2,5 +2,5 @@
 	path = model
 	url = https://huggingface.co/mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis
 [submodule "rp-connect-python"]
-	path = rp-connect-python
+	path = rpcp
 	url = https://github.com/voutilad/rp-connect-python

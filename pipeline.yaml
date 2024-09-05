@@ -37,7 +37,7 @@ pipeline:
                   root.score = scores[0]["score"]
                 else:
                   root.label = "unlabeled"
-                  root.score = None
+                  root.score = 0.0
           - cache:
               resource: memory_cache
               operator: set

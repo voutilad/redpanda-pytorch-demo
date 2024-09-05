@@ -1,0 +1,23 @@
+# Our Python processor that 
+processor_resources:
+  - label: python
+    python:
+      modules:
+        - torch
+      script: |
+        from classifier import get_pipeline
+        from os import environ
+
+        device = environ.get("RPCN_PYTORCH_DEVICE", "cpu")
+
+        text = content().decode()
+        pipeline = get_pipeline(device=device)
+        root.text = text
+
+        scores = pipeline(text)
+        if scores:
+          root.label = scores[0]["label"]
+          root.score = scores[0]["score"]
+        else:
+          root.label = "unlabeled"
+          root.score = 0.0

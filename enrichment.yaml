@@ -1,0 +1,45 @@
+## An enrichment pipeline that takes source data from a topic, classifies it
+## for sentiment using PyTorch, and then based on the label will route the
+## message to one of three topics: positive, negative, unknown.
+
+input:
+  kafka_franz:
+    seed_brokers:
+      - ${REDPANDA_BROKERS:localhost}
+    topics: 
+      - ${REDPANDA_TOPIC:news}
+    consumer_group: ${REDPANDA_CONSUMER_GROUP:sentiment-analyzer}
+    batching:
+      count: 1000
+      period: 5s
+    tls:
+      enabled: ${REDPANDA_TLS:false}
+    sasl:
+      - mechanism: ${REDPANDA_SASL_MECHANISM:none}
+        username: ${REDPANDA_SASL_USERNAME:}
+        password: ${REDPANDA_SASL_PASSWORD:}
+
+pipeline:
+  processors:
+    - resource: python
+
+output:
+  kafka_franz:
+    seed_brokers:
+      - ${REDPANDA_BROKERS:localhost}
+    topic: "${!this.label | unknown}-${REDPANDA_TOPIC:news}"
+    key: ${!meta("kafka_key")}
+    batching:
+      count: 1000
+      period: 5s
+    tls:
+      enabled: ${REDPANDA_TLS:false}
+    sasl:
+      - mechanism: ${REDPANDA_SASL_MECHANISM:none}
+        username: ${REDPANDA_SASL_USERNAME:}
+        password: ${REDPANDA_SASL_PASSWORD:}
+
+http:
+  enabled: false
+logger:
+  level: INFO

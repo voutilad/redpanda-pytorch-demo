@@ -1,3 +1,7 @@
+## An HTTP-based API for sentiment analysis of financial news that uses PyTorch
+## to classify POST-ed content. The results may optionally be written to one of
+## three different Redpanda topics, based on the resulting label.
+
 input:
   http_server:
     address: 127.0.0.1:8080
@@ -15,62 +19,60 @@ pipeline:
     - cache:
         resource: memory_cache
         operator: get
-        key: '${!content().string().hash("sha1")}'
+        key: '${!content().string().hash("sha1").encode("hex")}'
     - branch:
         request_map: |
           # on error, we had a cache miss.
           root = if errored() { content() } else { deleted() }
         processors:
-          - python:
-              modules:
-                - torch
-              script: |
-                from classifier import get_pipeline
-
-                text = content().decode()
-                pipeline = get_pipeline(device="cpu")
-                root.text = text
-
-                scores = pipeline(text)
-                if scores:
-                  root.label = scores[0]["label"]
-                  root.score = scores[0]["score"]
-                else:
-                  root.label = "unlabeled"
-                  root.score = 0.0
+          - resource: python
+          - mutation: |
+              # compute a sha1 hash as a key
+              root.metadata.sha1 = this.text.hash("sha1").encode("hex")
           - cache:
               resource: memory_cache
               operator: set
-              key: '${!this.text.hash("sha1")}'
+              key: '${!this.metadata.sha1}'
               value: '${!content()}'
         result_map: |
           root = this
           root.metadata.cache_hit = false
-    - mapping: |
-        root = this
+    - mutation: |
         root.metadata.cache_hit = this.metadata.cache_hit | true
 
 output:
   resource: ${RPCN_OUTPUT_MODE:http}
 
 output_resources:
+  # Send the HTTP response back to the client.
   - label: http
     sync_response: {}
+
+  # Send the data to Redpanda.
+  - label: redpanda
+    kafka_franz:
+      seed_brokers:
+        - ${REDPANDA_BROKERS:localhost}
+      topic: "${!this.label | unknown}-${REDPANDA_TOPIC:news}"
+      key: ${!this.metadata.sha1}
+      batching:
+        count: 1000
+        period: 5s
+      tls:
+        enabled: ${REDPANDA_TLS:false}
+      sasl:
+        - mechanism: ${REDPANDA_SASL_MECHANISM:none}
+          username: ${REDPANDA_SASL_USERNAME:}
+          password: ${REDPANDA_SASL_PASSWORD:}
+
+  # Do both: send to Redpanda and reply to the client.
   - label: both
     broker:
       pattern: fan_out
       outputs:
-        - sync_response: {}
-        - kafka_franz:
-            seed_brokers:
-              - ${REDPANDA_BROKERS:localhost}
-            topic: financial-sentiment
-            tls:
-              enabled: ${REDPANDA_TLS:false}
-            sasl:
-              - mechanism: ${REDPANDA_SASL_MECHANISM:none}
-                username: ${REDPANDA_SASL_USERNAME:}
-                password: ${REDPANDA_SASL_PASSWORD:}
+        - resource: http
+        - resource: redpanda
+
 
 http:
   enabled: false

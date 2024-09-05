@@ -51,7 +51,25 @@ pipeline:
         root.metadata.cache_hit = this.metadata.cache_hit | true
 
 output:
-  sync_response: {}
+  resource: ${RPCN_OUTPUT_MODE:http}
+
+output_resources:
+  - label: http
+    sync_response: {}
+  - label: both
+    broker:
+      pattern: fan_out
+      outputs:
+        - sync_response: {}
+        - kafka_franz:
+            seed_brokers: [ ${REDPANDA_BROKERS:localhost} ]
+            topic: financial-sentiment
+            tls:
+              enabled: ${REDPANDA_TLS:false}
+            sasl:
+              - mechanism: ${REDPANDA_SASL_MECHANISM:none}
+                username: ${REDPANDA_SASL_USERNAME:}
+                password: ${REDPANDA_SASL_PASSWORD:}
 
 http:
   enabled: false

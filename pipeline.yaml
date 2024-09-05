@@ -1,0 +1,60 @@
+input:
+  http_server:
+    address: 127.0.0.1:8080
+    path: /sentiment
+
+cache_resources:
+  - label: memory_cache
+    memory:
+      default_ttl: 5m
+      compaction_interval: 60s
+
+pipeline:
+  processors:
+    # First, we try looking up a previously computed score in our cache.
+    - cache:
+        resource: memory_cache
+        operator: get
+        key: '${!content().string().hash("sha1")}'
+    - branch:
+        request_map: |
+          # on error, we had a cache miss.
+          root = if errored() { content() } else { deleted() }
+        processors:
+          - python:
+              modules:
+                - torch
+              script: |
+                from classifier import get_pipeline
+
+                text = content().decode()
+                pipeline = get_pipeline("mps")
+                root.text = text
+
+                scores = pipeline(text)
+                if scores:
+                  root.label = scores[0]["label"]
+                  root.score = scores[0]["score"]
+                else:
+                  root.label = "unlabeled"
+                  root.score = None
+          - cache:
+              resource: memory_cache
+              operator: set
+              key: '${!this.text.hash("sha1")}'
+              value: '${!content()}'
+        result_map: |
+          root = this
+          root.metadata.cache_hit = false
+    - mapping: |
+        root = this
+        root.metadata.cache_hit = this.metadata.cache_hit | true
+
+output:
+  sync_response: {}
+
+http:
+  enabled: false
+logger:
+  level: INFO
+

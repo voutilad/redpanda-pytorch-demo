@@ -41,7 +41,7 @@ pipeline:
         root.metadata.cache_hit = this.metadata.cache_hit | true
 
 output:
-  resource: ${RPCN_OUTPUT_MODE:http}
+  resource: ${DEMO_OUTPUT_MODE:http}
 
 output_resources:
   # Send the HTTP response back to the client.
@@ -52,7 +52,7 @@ output_resources:
   - label: redpanda
     kafka_franz:
       seed_brokers:
-        - ${REDPANDA_BROKERS:localhost}
+        - ${REDPANDA_BROKERS:localhost:9092}
       topic: "${!this.label | unknown}-${REDPANDA_TOPIC:news}"
       key: ${!this.metadata.sha1}
       batching:

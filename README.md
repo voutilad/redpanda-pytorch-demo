@@ -1,10 +1,13 @@
 # Putting ML to Work with Redpanda Connect and PyTorch
 
 <div align="center">
-  <img src="./banner.jpeg" width="45%"
+  <img src="./img/banner.jpeg" height="45%"
     alt="A redpanda & a python exploring a cave while carrying a torch."
+    style="padding: 20px"
   >
 </div>
+
+> Who's that little guy in the background? _No idea!_
 
 This is an example of rapidly deploying a tuned classification model by using
 Redpanda Connect with Python. It leverages Python modules from
@@ -653,3 +656,9 @@ our input topic with a key, we'll re-use that key.
 Hopefully this is helpful in both explaining the intricacies of Redpanda
 Connect end-to-end as well as illustrating a useful example of using a
 low-code approach to building enrichment services and pipelines!
+
+
+## About the Banner Image
+
+The cute Redpanda and Python exploring a cave was created by
+[Bing Image Creator](https://www.bing.com/images/create).

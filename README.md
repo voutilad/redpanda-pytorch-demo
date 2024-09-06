@@ -344,8 +344,10 @@ python:
   script: |
     from classifier import get_pipeline
 
+    device = environ.get("DEMO_PYTORCH_DEVICE", "cpu")
+
     text = content().decode()
-    pipeline = get_pipeline("mps")
+    pipeline = get_pipeline(device=device)
     root.text = text
 
     scores = pipeline(text)
@@ -372,7 +374,9 @@ tokenizer.
 >    an appropriate value that PyTorch can use. For instance, if you're
 >    on macOS with Apple Silicon, use `"mps"`. See the
 >    [torch.device](https://pytorch.org/docs/stable/tensor_attributes.html#torch.device)
->    docs for details on supported values.
+>    docs for details on supported values. To do this in the demo, you
+>    can set the environment variable `DEMO_PYTORCH_DEVICE` to the type
+>    you want to use.
 
 For more details on how Python integrates with Redpanda Connect, see the
 https://github.com/voutilad/rp-connect-python project on the nuances of

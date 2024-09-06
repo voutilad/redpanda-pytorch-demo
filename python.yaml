@@ -1,4 +1,6 @@
-# Our Python processor that 
+## Our Python processor that uses a fine-tuned sentiment model to classify
+## financial news.
+
 processor_resources:
   - label: python
     python:
@@ -8,7 +10,7 @@ processor_resources:
         from classifier import get_pipeline
         from os import environ
 
-        device = environ.get("RPCN_PYTORCH_DEVICE", "cpu")
+        device = environ.get("DEMO_PYTORCH_DEVICE", "cpu")
 
         text = content().decode()
         pipeline = get_pipeline(device=device)

@@ -4,7 +4,7 @@
 
 input:
   http_server:
-    address: 127.0.0.1:8080
+    address: ${HOST:127.0.0.1}:${PORT:8080}
     path: /sentiment
 
 cache_resources:

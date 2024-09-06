@@ -38,15 +38,28 @@ https://huggingface.co/mrm8488/distilroberta-finetuned-financial-news-sentiment-
 
 ## Requirements
 
-- Python 3.12
+You must have:
+
+- Python 3.12 (see the [Docker](#docker) section if you only have 3.11)
 - [`git lfs`](https://git-lfs.com)
 - Go 1.22 or so
 - Redpanda or [Redpanda Serverless](https://cloud.redpanda.com/sign-up/)
 - [`rpk`](https://docs.redpanda.com/current/get-started/rpk-install/)
+
+Optionally, you should have:
+
 - `jq` (optional)
+- Docker
 
 
 ## Installation
+
+Two methods are provided: local (recommended so you can follow all the
+examples) and Docker-based. If you don't have a local copy of Python 3.12,
+you should use the Docker approach.
+
+
+### Local Installation
 
 On macOS or Linux distros, you can copy and paste these commands to
 get up and running quickly:
@@ -78,6 +91,40 @@ pip install -r requirements.txt
 ```sh
 CGO_ENABLED=0 go build -C rpcp
 ```
+
+### Docker
+
+A provided [Dockerfile](./Dockerfile) makes it easy to package up the model,
+Redpanda Connect, and the Python environment. This is great if you don't have
+Python 3.12 locally (like on Debian 12 distros) or want to actually deploy
+this thing somewhere in the cloud.
+
+Use `docker` to build our image and tag it as `redpanda-torch`:
+
+```sh
+docker build . -t redpanda-torch
+```
+
+The built image is pre-set to run the [HTTP server](#the-http-api-server), so
+you just need to expose the TCP port:
+
+```sh
+docker run --rm -it -p 8080:8080 redpanda-torch
+```
+
+> In the walkthrough below, you'll use environment variables to configure
+> runtime settings in Redpanda Connect. Just use the Docker conventions,
+> setting them via `--env` or `-e`.
+
+For running the streaming enrichment [example](#the-enrichment-pipeline),
+override the command line args:
+
+```sh
+docker run --rm -it -p 8080:8080 redpanda-torch \
+  run -r python.yaml enrichment.yaml
+```
+
+> Those yaml files are inside the Docker image, by the way.
 
 
 ## Preparing Redpanda

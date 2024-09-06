@@ -1,4 +1,10 @@
-# Putting ML to Work with Redpanda Connect
+# Putting ML to Work with Redpanda Connect and PyTorch
+
+<div align="center">
+  <img src="./banner.jpeg" width="45%"
+    alt="A redpanda & a python exploring a cave while carrying a torch."
+  >
+</div>
 
 This is an example of rapidly deploying a tuned classification model by using
 Redpanda Connect with Python. It leverages Python modules from
@@ -45,9 +51,9 @@ get up and running quickly:
 1. Clone the project and its submodules:
 
 ```sh
-git clone https://github.com/voutilad/redpanda-mlops
+git clone https://github.com/voutilad/redpanda-pytorch-demo
 
-cd redpanda-mlops
+cd redpanda-pytorch-demo
 
 git submodule update --init --recursive
 ```

@@ -282,7 +282,7 @@ surface area for interacting with clients:
 ```yaml
 input:
   http_server:
-    address: 127.0.0.1:8080
+    address: ${HOST:127.0.0.1}:${PORT:8080}
     path: /sentiment
 ```
 
@@ -290,6 +290,12 @@ The `http_server` can do a lot more than this, including support TLS for
 secure communication as well as support websocket connections. In this case,
 we keep it simple: clients need to POST a body of text to the `/sentiment`
 path on our local web server.
+
+You'l also notice the our first usage of _environment variable interpolation_.
+More will be said about it in coming sections, but for now just view using
+`HOST` and `PORT` environment variables as a way to deviate from our default
+listen address of `127.0.0.1` and port `8080`. (This is how the provided
+[Dockerfile](./Dockerfile) changes the default `HOST` to `0.0.0.0`.)
 
 
 #### Using Caching to Reduce Stress on the Model

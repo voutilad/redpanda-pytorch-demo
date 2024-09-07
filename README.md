@@ -1,7 +1,7 @@
 # Putting ML to Work with Redpanda Connect and PyTorch
 
 <div align="center">
-  <img src="./img/banner.jpeg" height="45%"
+  <img src="./img/banner.jpeg" height="35%" width="60%"
     alt="A redpanda & a python exploring a cave while carrying a torch."
     style="padding: 20px"
   >

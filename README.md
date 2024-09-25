@@ -392,8 +392,6 @@ to how our cache resource was defined. The important parts are repeated below:
 
 ```yaml
 python:
-  modules:
-    - torch
   script: |
     from classifier import get_pipeline
 
@@ -416,10 +414,8 @@ Using the [Python integration](https://github.com/voutilad/rp-connect-python),
 we can leverage PyTorch and Hugging Face tools in just a few lines of inline
 code.
 
-There's a global import of the `torch` module (required because of how
-embedding Python works) and a runtime import of a local helper module
-[classifier](./classifier.py) that wires up the pre-trained model and
-tokenizer.
+There's a runtime import of a local helper module [classifier](./classifier.py)
+that wires up the pre-trained model and tokenizer.
 
 > Q: What about GPUs? Does this work with GPUs?
 > A: Yes. The code is defaulting right now to a "cpu" device, but you can

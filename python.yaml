@@ -4,8 +4,6 @@
 processor_resources:
   - label: python
     python:
-      modules:
-        - torch
       script: |
         from classifier import get_pipeline
         from os import environ
